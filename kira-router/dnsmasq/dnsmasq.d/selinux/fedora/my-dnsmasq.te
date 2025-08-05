@@ -1,0 +1,22 @@
+
+module my-dnsmasq 1.0;
+
+require {
+	type dnsmasq_t;
+	type dnsmasq_etc_t;
+	class dir write;
+	class file { append write };
+	class capability dac_override;
+}
+
+#============= dnsmasq_t ==============
+
+#!!!! This avc is allowed in the current policy
+allow dnsmasq_t dnsmasq_etc_t:dir write;
+
+#!!!! This avc is allowed in the current policy
+allow dnsmasq_t dnsmasq_etc_t:file append;
+allow dnsmasq_t dnsmasq_etc_t:file write;
+
+#!!!! This avc is allowed in the current policy
+allow dnsmasq_t self:capability dac_override;

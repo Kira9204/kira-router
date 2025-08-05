@@ -1,0 +1,6 @@
+[Match]
+MACAddress=your-mac-address-here
+
+[Link]
+Name=wan
+

@@ -1,0 +1,16 @@
+[Unit]
+Description=Wireguard
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=root
+Type=oneshot
+RemainAfterExit=true
+WorkingDirectory=/root/kira-router/wireguard/sk
+ExecStart=/root/kira-router/wireguard/sk/start.sh
+ExecStop=/root/kira-router/wireguard/sk/stop.sh
+ExecReload=/root/kira-router/wireguard/sk/start.sh
+
+[Install]
+WantedBy=multi-user.target

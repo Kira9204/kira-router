@@ -1,0 +1,12 @@
+[Unit]
+Description=Sync global IPv4 and IPv6 address with domain names
+Requires=dns-update.service
+
+[Timer]
+Unit=dns-update.service
+Persistent=true
+OnCalendar=*-*-* 08:00:00
+
+[Install]
+WantedBy=timers.target
+

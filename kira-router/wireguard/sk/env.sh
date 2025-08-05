@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+IVPN=wg_sk
+IVPN_IPv4="169.254.0.4"
+IVPN_IPv4_SUB=26
+
+ILAN_IPv4=10.0.6.1
+ROUTE_DOS=(10.0.1.0/24 via 169.254.0.5 src $ILAN_IPv4)
+ROUTE_NEO=(10.0.3.0/24 via 169.254.0.1 src $ILAN_IPv4)
+ROUTE_TB=(10.0.4.0/24 via 169.254.0.3 src $ILAN_IPv4)

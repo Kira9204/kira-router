@@ -1,0 +1,77 @@
+# https://blog.g3rt.nl/systemd-networkd-dhcpv6-pd-configuration.html
+[Match]
+Name=lan
+
+[Link]
+RequiredForOnline=true
+RequiredFamilyForOnline=both
+
+[Network]
+Description=Link to the LAN for my clients
+
+##### Static IPv4 configuration ####
+Address=10.0.6.1/24
+
+#### IPv6 configuration ####
+LinkLocalAddressing=true
+#
+# Clients will be automatically onfigured with an IPv6 address if your ISP provides it.
+# Use "networkctl status" to debug what your ISP provides.
+#
+# You can manually specify several addresses here if you are assigned a static prefix, or desire
+# a ULA prefix for your network.
+#
+# If your ISP does not provide you with a prefix for your network (It should), and ONLY provides a DHCP
+# to your WAN interface, it is possible to assign an IPv6 ULA prefix and perform NAT like
+# a regular IPv4 NAT network setup here.
+# Only do this if you are not assigned a prefix. The firewall will not reveal internal
+# "public" addresses, nor will it allow incomming traffic without port forwards.
+#
+#Address=
+#
+# IPv6 should only be configured from a DHCPv6Prefix delegation
+# Do not configure this interface using router advertisemens.
+# Use the DHCPv6PrefixDelegation to recieve a /64 block from your ISP.
+IPv6AcceptRA=false
+#
+# This will provide you with an IPv6 /64 block by your ISP.
+# By announcing this block using Router Advertisements, your clients
+# will automatically configure themselves using SLAAC with an IPv6 address
+# from this block.
+# See: networkctl status lan
+#
+DHCPv6PrefixDelegation=true
+
+# Announce our IPv6 block and act as a router.
+# This will send Router advertisements to your clients with the /64 block provided by your ISP.
+# Your clients will in turn configure themselves using SLAAC.
+#
+# It is recommended to leave this as false and let DNSMASQ send these advertisements instead.
+# This allows for greater configurability and will advertise your LAN IPv6 interface as an IPv6 DNS server.
+IPv6SendRA=false
+#
+# This should be set to false for the LAN interface, and optionally true for the WAN interface
+IPv6PrivacyExtensions=false
+#
+# WORKAROUND
+# On some networks (like mine), this request will leave the interface in a perpetual "configuring" state.
+# This means that since this inerface is marked as required for online, but never configured,
+# systemd-networkd-wait-online.service will fail.
+#
+# If you are using DHCPPrefixDelegation, this check is not needed, hence we can safely disable it.
+IPv6DuplicateAddressDetection=0
+#
+#
+[DHCPPrefixDelegation]
+# The WAN interface that will provide us with the IPv6 block
+UplinkInterface=wan
+#
+#
+# Enable by setting IPv6SendRA=true
+[IPv6SendRA]
+# Set to true to emot IPv6 DNS info
+EmitDNS=false
+# Emit the IPv6 link-local address as a DNS address
+DNS=_link_local
+# Do not emit any DNS search domains
+EmitDomains=false

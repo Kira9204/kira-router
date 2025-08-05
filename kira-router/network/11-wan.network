@@ -1,0 +1,55 @@
+# https://blog.g3rt.nl/systemd-networkd-dhcpv6-pd-configuration.html
+[Match]
+Name=wan
+
+[Link]
+RequiredForOnline=yes
+RequiredFamilyForOnline=both
+
+[Network]
+Description=Link to the WAN
+# We only need a link-local address for IPv6 (required to run IPv6),
+LinkLocalAddressing=true
+# You can take a generated address and put it as a static one later here using "ip addr"
+# For the WAN link, use the /64 address. Always include the /64
+#Address=
+# If your ISP sends you router advertisements, use this information to configure IPv6 information.
+# Your IPv6 address will be provided using SLAAC
+IPv6AcceptRA=true
+# Enables DHCP for both IPv4 and IPv6
+# For IPv4, this configures every aspect of the connection
+# For IPv6, this can either include complete IPv6 addressing, or just IPv6 DNS servers etc
+# Regardless, setting this to true is a good idea
+DHCP=true
+# You can have a temporary IPv6 address used for outgoing requests
+# While it improves privacy, the router itself probably doesn't need this
+# Every IPv6 client on your network can determine if they want this individually
+IPv6PrivacyExtensions=no
+
+[DHCPv4]
+# Do not release our current IP when restarting the computer
+# Rather, let the lease expire
+# This prevents us from loosing our IPv4 address simply because the
+# computer restarted
+SendRelease=no
+# DHCP leases are typically tied to an identifier
+# If you want to retain your IPv4 address, you will want something static
+# Like your NICs MAC address here
+ClientIdentifier=mac
+# You can request a specific IPv4 address from your ISP DHCP.
+# This is a "soft fail", so it's a request but not a requirement.
+# This address should not include the subnet bits
+#RequestAddress=
+
+[DHCPv6]
+# Do not release our current IP when restarting the computer
+# Rather, let the lease expire
+# This prevents us from loosing our IPv6 address simply because the
+# computer restarted
+SendRelease=no
+# Use our IPv6 Link-Local address as the DHCP lease identifier
+# This prevents us from loosing our IPv6 address simply because the
+# computer restarted
+#DUIDType=link-layer
+# Use this to find out your DUID networkctl status wan
+#DUIDRawData=

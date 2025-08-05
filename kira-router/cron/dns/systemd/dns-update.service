@@ -1,0 +1,10 @@
+[Unit]
+Description=Sync global IPv4 and IPv6 address with domain names
+Requires=network-online.target
+After=network-online.target
+Wants=dns-update.timer
+
+[Service]
+WorkingDirectory=/root/kira-router/cron/dns
+ExecStart=/root/kira-router/cron/dns/digital-occean-dns-update.sh
+User=root

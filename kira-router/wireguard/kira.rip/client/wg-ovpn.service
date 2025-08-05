@@ -1,0 +1,16 @@
+[Unit]
+Description=Wireguard
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=root
+Type=oneshot
+RemainAfterExit=true
+WorkingDirectory=/root/kira-router/wireguard/ovpn
+ExecStart=/root/kira-router/wireguard/ovpn/start.sh
+ExecStop=/root/kira-router/wireguard/ovpn/stop.sh
+ExecReload=/root/kira-router/wireguard/ovpn/start.sh
+
+[Install]
+WantedBy=multi-user.target

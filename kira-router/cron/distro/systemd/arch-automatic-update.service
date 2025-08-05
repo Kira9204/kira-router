@@ -1,0 +1,7 @@
+[Unit]
+Description=Automatically installs Arch updates
+Wants=arch-automatic-update.timer
+
+[Service]
+ExecStart=/root/simple-linux-router/cron/distro/arch-automatic-update.sh
+User=root

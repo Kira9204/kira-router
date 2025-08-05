@@ -1,0 +1,67 @@
+
+1. Enableing kira-router scripts:
+================================
+In order to use this project you must configure SELinux to allow executables from outside standard directories.
+You can manually add allowed executables with the following examples:
+
+For single files:
+sudo semanage fcontext -a -t bin_t "/root/kira-router/nftables/start.sh"
+sudo restorecon -v /root/kira-router/nftables/start.sh
+
+To remove
+sudo semanage fcontext -d "/opt/kira-router/nftables/start.sh"
+sudo restorecon -v /root/kira-router/nftables/start.sh
+
+For the whole directory:
+sudo semanage fcontext -a -t bin_t "/root/kira-router(/.*)?"
+sudo restorecon -Rv /root/kira-router
+
+To remove
+sudo semanage fcontext -d "/root/kira-router(/.*)?"
+sudo restorecon -Rv /root/kira-router
+
+You can later find these entries using
+cat /etc/selinux/targeted/contexts/files/file_contexts.local
+
+2. Running SSH on custom ports
+================================
+It is recommended that you only allow port 22 on the LAN interface, and use a custom port on the internet.
+Run the following to enable additional ports:
+sudo semanage port -a -t ssh_port_t -p tcp <port>
+
+It is also recommended that you set up rules like the following in sshd_config:
+# Disable root login by default
+PermitRootLogin no
+# Allow root from specific subnets
+Match Address 10.0.6.0/24
+  PermitRootLogin yes
+Match All
+
+
+3. Generating SELINUX modules
+================================
+You can generate custom SELINUX modules based on the SELINUX error log that ALLOWS the errors that are reported.
+This helps tremendously when debugging.
+Do this by running the following using dnsmasq as an example:
+sudo ausearch -m avc -c dnsmasq
+sudo ausearch -c 'dnsmasq' --raw | audit2allow -M my-dnsmasq
+sudo semodule -X 300 -i my-dnsmasq.pp
+
+And then allow files or folders in the context
+#sudo semanage fcontext -a -t dnsmasq_etc_t "/etc/dnsmasq.d(/.*)?"
+sudo semanage fcontext -a -t dnsmasq_etc_t "/etc/dnsmasq.d/dhcp.d/dnsmasq.leases"
+
+4. Disabling SELINUX entierly
+================================
+While not recomended, SELINUX can be more of a headace than an asset.
+Distros like Ubuntu that uses AppArmour are far less restrictive and much easier to configure (Simple XML files!).
+Arch based distros uses none of these systems at all.
+
+Red Hat and the Fedora team strongly suggests against disableing SELINUX to the point that modifying /etc/selinux/config
+breaks the system during updates, but you can still disable it using Kernel params.
+
+1. Modify the file /etc/default/grub and edit the boot arguments:
+GRUB_CMDLINE_LINUX="rhgb quiet selinux=0"
+2. Regenerate the grub configuration files
+grub2-mkconfig -o /boot/grub2/grub.cfg
+3. Reboot!

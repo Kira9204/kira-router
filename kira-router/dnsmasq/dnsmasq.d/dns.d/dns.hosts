@@ -1,0 +1,5 @@
+# Use hosts style format like the example below
+# 0.0.0.0 dns1 dns2
+10.0.6.1 router time.windows.com time.apple.com time.android.com
+10.0.6.2 server
+
