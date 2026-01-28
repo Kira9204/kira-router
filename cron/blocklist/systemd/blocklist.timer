@@ -1,0 +1,12 @@
+[Unit]
+Description=Updates the DNS blocklist hosts file
+
+[Timer]
+Unit=blocklist.service
+# Set to false to not run job on boot
+Persistent=false
+OnCalendar=*-*-* 05:30:00
+
+[Install]
+WantedBy=timers.target
+

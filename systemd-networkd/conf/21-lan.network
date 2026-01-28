@@ -1,0 +1,41 @@
+[Match]
+Name=lan
+
+[Link]
+# A static IPv4 and IPv6 would consider this interface "online" immediately,
+# despite us not being online yet.
+RequiredForOnline=no
+
+[Network]
+Description=LAN for clients
+Address=10.0.6.1/24
+# You can set an IPv6 ULA address for static addressing.
+# The address should be <subnet>::1/64
+# See: https://unique-local-ipv6.com/
+Address=fde5:7dda:9d44::1/64
+
+# We’re the router on LAN; don’t accept upstream RAs here
+IPv6AcceptRA=no
+
+# Get a delegated IPv6 prefix from WAN and assign a /64 subnet to LAN
+DHCPPrefixDelegation=yes
+# Annonce our aquired IPv6 prefix to our clients.
+# Disable this if you want to use DNSMASQ instead.
+IPv6SendRA=no
+IPv6PrivacyExtensions=no
+IPv6DuplicateAddressDetection=0
+
+[DHCPPrefixDelegation]
+UplinkInterface=wan
+SubnetId=0
+Assign=yes
+
+# Advertise the public IPv6 prefix you got from your ISP
+[IPv6SendRA]
+# Stateless SLAAC
+Managed=no
+OtherInformation=no
+# Advertise ourselves as DNS via RDNSS (link-local)
+EmitDNS=yes
+DNS=_link_local
+

@@ -1,0 +1,27 @@
+[Match]
+Name=wan
+
+[Link]
+RequiredForOnline=routable
+RequiredFamilyForOnline=both
+
+[Network]
+Description=Link to the WAN
+LinkLocalAddressing=yes
+IPv6AcceptRA=yes
+DHCP=yes
+IPv6PrivacyExtensions=no
+
+[DHCPv4]
+RapidCommit=yes
+SendRelease=no
+ClientIdentifier=mac
+
+[DHCPv6]
+WithoutRA=solicit
+RapidCommit=yes
+RequestPrefix=yes
+PrefixDelegationHint=56
+SendRelease=no
+DUIDType=link-layer
+

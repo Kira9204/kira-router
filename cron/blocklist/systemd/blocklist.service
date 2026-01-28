@@ -1,0 +1,11 @@
+[Unit]
+Description=Automatically updates hosts file blocklist
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=root
+Type=oneshot
+RemainAfterExit=no
+ExecStart=/usr/local/bin/blocklist.sh
+

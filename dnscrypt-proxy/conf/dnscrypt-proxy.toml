@@ -1,0 +1,74 @@
+# A full example can be found here: https://raw.githubusercontent.com/DNSCrypt/dnscrypt-proxy/refs/heads/master/dnscrypt-proxy/example-dnscrypt-proxy.toml
+
+listen_addresses = ['127.0.0.1:1053']
+
+# See https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md
+server_names = ['cloudflare', 'cloudflare-ipv6', 'google', 'google-ipv6']
+force_tcp = false
+http3 = true
+http3_probe = true
+timeout = 5000
+keepalive = 60
+cert_refresh_delay = 240
+max_clients = 250
+
+ipv4_servers = true
+ipv6_servers = true
+dnscrypt_servers = true
+doh_servers = true
+
+require_dnssec = false
+require_nolog = false
+require_nofilter = false
+
+bootstrap_resolvers = ['9.9.9.9:53', '8.8.8.8:53']
+ignore_system_dns = true
+netprobe_timeout = 60
+netprobe_address = '9.9.9.9:53'
+
+block_ipv6 = false
+block_unqualified = true
+block_undelegated = true
+reject_ttl = 600
+
+cache = false
+cache_size = 4096
+cache_min_ttl = 2400
+cache_max_ttl = 86400
+cache_neg_min_ttl = 60
+cache_neg_max_ttl = 600
+
+log_files_max_size = 0
+log_files_max_age = 0
+log_files_max_backups = 0
+[query_log]
+  file = 'query.log'
+  format = 'tsv'
+[nx_log]
+  file = 'nx.log'
+  format = 'tsv'
+
+[sources]
+  [sources.public-resolvers]
+  urls = [
+    'https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md'
+  ]
+  cache_file = 'public-resolvers.md'
+  minisign_key = 'RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3'
+  refresh_delay = 73
+  prefix = ''
+
+[broken_implementations]
+  fragments_blocked = [
+    'cisco',
+    'cisco-ipv6',
+    'cisco-familyshield',
+    'cisco-familyshield-ipv6',
+    'cisco-sandbox',
+    'cleanbrowsing-adult',
+    'cleanbrowsing-adult-ipv6',
+    'cleanbrowsing-family',
+    'cleanbrowsing-family-ipv6',
+    'cleanbrowsing-security',
+    'cleanbrowsing-security-ipv6',
+  ]

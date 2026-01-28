@@ -1,0 +1,15 @@
+[Unit]
+Description=Unbound recursive Domain Name Server
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Type=notify
+EnvironmentFile=-/etc/sysconfig/unbound
+ExecStartPre=/usr/sbin/unbound-checkconf
+ExecStart=/usr/sbin/unbound -d $UNBOUND_OPTIONS
+ExecReload=/usr/sbin/unbound-control reload
+Restart=on-abnormal
+
+[Install]
+WantedBy=multi-user.target

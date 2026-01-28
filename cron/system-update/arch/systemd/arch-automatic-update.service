@@ -1,0 +1,11 @@
+[Unit]
+Description=Automatically installs Arch updates
+Requires=network-online.target
+After=network-online.target
+Wants=arch-automatic-update.timer
+
+[Service]
+User=root
+Type=oneshot
+RemainAfterExit=no
+ExecStart=/usr/local/bin/arch-automatic-update.sh

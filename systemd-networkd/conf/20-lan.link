@@ -1,0 +1,5 @@
+[Match]
+MACAddress=bb:bb:bb:bb:bb:bb
+
+[Link]
+Name=lan

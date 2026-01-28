@@ -1,0 +1,16 @@
+[Unit]
+Description=Snekabel Wireguard VPN Networks Setup
+# Kira-router will clear and configure all nftables rules
+Requires=kira-router.service
+After=kira-router.service
+
+[Service]
+User=root
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/wg-sk.sh start
+ExecStop=/usr/local/bin/wg-sk.sh stop
+ExecReload=/usr/local/bin/wg-sk.sh start
+
+[Install]
+WantedBy=multi-user.target

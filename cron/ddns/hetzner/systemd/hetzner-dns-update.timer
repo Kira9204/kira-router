@@ -1,0 +1,11 @@
+[Unit]
+Description=Sync global IPv4 and IPv6 address with domain names
+
+[Timer]
+Unit=hetzner-dns-update.service
+Persistent=false
+OnCalendar=*-*-* 08:00:00
+
+[Install]
+WantedBy=timers.target
+

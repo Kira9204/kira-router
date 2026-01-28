@@ -1,0 +1,20 @@
+server:
+  # Path to CA bundle
+  tls-cert-bundle: "/etc/ssl/certs/ca-certificates.crt"
+
+forward-zone:
+  name: "."
+  forward-tls-upstream: yes
+
+  # Cloudflare
+  forward-addr: 1.1.1.1@853#one.one.one.one
+  forward-addr: 1.0.0.1@853#one.one.one.one
+  forward-addr: 2606:4700:4700::1111@853#one.one.one.one
+  forward-addr: 2606:4700:4700::1001@853#one.one.one.one
+
+  # Google
+  forward-addr: 8.8.8.8@853#dns.google
+  forward-addr: 8.8.4.4@853#dns.google
+  forward-addr: 2001:4860:4860::8888@853#dns.google
+  forward-addr: 2001:4860:4860::8844@853#dns.google
+

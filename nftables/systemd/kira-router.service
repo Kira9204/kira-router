@@ -1,0 +1,15 @@
+[Unit]
+Description=Kira-router nftables generation script
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=root
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/kira-router.sh start
+ExecStop=/usr/local/bin/kira-router.sh stop
+ExecReload=/usr/local/bin/kira-router.sh start
+
+[Install]
+WantedBy=multi-user.target

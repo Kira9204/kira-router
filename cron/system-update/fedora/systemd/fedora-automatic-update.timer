@@ -1,0 +1,11 @@
+[Unit]
+Description=Install Fedora updates at 06:00
+
+[Timer]
+Unit=fedora-automatic-update.service
+Persistent=false
+OnCalendar=*-*-* 06:00:00
+
+[Install]
+WantedBy=timers.target
+

@@ -1,0 +1,16 @@
+forward-zone:
+  name: "."
+  forward-tls-upstream: no
+
+  # Cloudflare
+  forward-addr: 1.1.1.1
+  forward-addr: 1.0.0.1
+  forward-addr: 2606:4700:4700::1111
+  forward-addr: 2606:4700:4700::1001
+
+  # Google
+  forward-addr: 8.8.8.8
+  forward-addr: 8.8.4.4
+  forward-addr: 2001:4860:4860::8888
+  forward-addr: 2001:4860:4860::8844
+

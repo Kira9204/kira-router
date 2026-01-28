@@ -1,0 +1,13 @@
+[Unit]
+Description=Sync global IPv4 and IPv6 address with domain names
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=root
+Type=oneshot
+RemainAfterExit=no
+ExecStart=/root/kira-router/cron/dns/digital-occean-dns-update.sh
+
+[Install]
+WantedBy=multi-user.target

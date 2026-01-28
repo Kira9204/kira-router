@@ -1,0 +1,12 @@
+[Unit]
+Description=Automatically installs Fedora updates
+Requires=network-online.target
+After=network-online.target
+Wants=fedora-automatic-update.timer
+
+[Service]
+User=root
+Type=oneshot
+RemainAfterExit=no
+ExecStart=/usr/local/bin/fedora-automatic-update.sh
+

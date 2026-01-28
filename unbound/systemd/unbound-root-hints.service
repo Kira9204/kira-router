@@ -1,0 +1,7 @@
+[Unit]
+Description=Update root hints for unbound
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/curl -o /etc/unbound/conf.d/recursive-raw.hints "https://www.internic.net/domain/named.root"

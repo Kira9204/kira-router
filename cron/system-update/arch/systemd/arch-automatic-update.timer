@@ -1,0 +1,11 @@
+[Unit]
+Description=Install Arch updates at 06:00
+
+[Timer]
+Unit=arch-automatic-update.service
+Persistent=false
+OnCalendar=*-*-* 06:00:00
+
+[Install]
+WantedBy=timers.target
+
