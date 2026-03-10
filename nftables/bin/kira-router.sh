@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-set -euo pipefail
 # DEBUG mode - Prints every command being executed
 #set -x
 DIR_CONF="/etc/kira-router/nftables"
 DIR_LIB="/usr/local/lib/kira-router"
-source "$DIR_LIB/common.lib.sh"
+source "$DIR_LIB/error-hander.sh"
+enable_strict_mode
 
+source "$DIR_LIB/common.lib.sh"
 source "$DIR_CONF/env.sh"
 source "$DIR_CONF/forwards.sh"
 source "$DIR_CONF/blocklist.sh"
@@ -43,6 +44,8 @@ verify_required_vars() {
     local value="${!var}"
     if [ -z "$value" ]; then
       print_error "Required variable is empty: $var"
+      print_error "Please set a value for $var in $DIR_CONF/env.sh and try again."
+      print_error "If you are unsure about the correct value, you should probably leave it at the default value provided in the original env.sh file."
       missing=1
     fi
   done
@@ -132,7 +135,7 @@ wait_until_network_is_configured() {
   print_info "Waiting until network interfaces are configured..."
   local attempts=0
   local max_attempts="${WAIT_MAX_ATTEMPTS:-60}"
-  local sleep_seconds="${WAIT_SLEEP_SECONDS:-1}"
+  local sleep_seconds=1
 
   until resolve_addresses; do
     attempts=$((attempts + 1))

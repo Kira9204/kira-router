@@ -13,16 +13,34 @@ echo "My IPv6 is $MY_IP_V6"
 
 # Usage: print_records | jq
 print-records() {
-  curl -X GET -H "Content-Type: application/json" \
+  curl -S -s -H "Content-Type: application/json" \
     -H "Authorization: Bearer $DIGITAL_OCEAN_TOKEN" \
     "https://api.digitalocean.com/v2/domains/$DOMAIN/records"
 }
 
+# Usage: get_record_value <record_id>
+# Fetches the current record value from Digital Ocean DNS
+get-record-value() {
+  local record_id="$1"
+  curl -S -s -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $DIGITAL_OCEAN_TOKEN" \
+    "https://api.digitalocean.com/v2/domains/$DOMAIN/records/$record_id" \
+    | jq -r '.domain_record.data // empty'
+}
+
 # Usage: update_record <record_id> <new value> | jq
+# Only updates if the current value differs from the new value
 update-record() {
   local record_id="$1"
   local new_value="$2"
-  curl -X PUT -H "Content-Type: application/json" \
+  local current
+  current=$(get-record-value "$record_id")
+  if [ "$current" = "$new_value" ]; then
+    echo "Record $record_id is already $new_value, skipping update"
+    return
+  fi
+  echo "Updating record $record_id: $current -> $new_value"
+  curl -S -s -X PUT -H "Content-Type: application/json" \
     -H "Authorization: Bearer $DIGITAL_OCEAN_TOKEN" \
     -d "{\"data\":\"$new_value\"}" \
     "https://api.digitalocean.com/v2/domains/$DOMAIN/records/$record_id"

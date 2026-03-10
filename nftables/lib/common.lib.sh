@@ -1,14 +1,4 @@
 #!/usr/bin/env bash
-
-# Make sure that the script is being sourced, not executed
-verify_no_exec() {
-  if [ "${BASH_SOURCE[0]}" == "$0" ]; then
-    print_error "This file must be sourced, not executed"
-    exit 1
-  fi
-}
-verify_no_exec
-
 verify_root() {
   # Make sure that the user is root before proceeding
   if [ "$EUID" -ne 0 ]; then
