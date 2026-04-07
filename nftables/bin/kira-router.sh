@@ -10,6 +10,7 @@ source "$DIR_LIB/common.lib.sh"
 source "$DIR_CONF/env.sh"
 source "$DIR_CONF/forwards.sh"
 source "$DIR_CONF/blocklist.sh"
+source "$DIR_CONF/post-setup.sh"
 
 # ===============================================================
 # ========== Initialization and verification Functions ==========
@@ -289,6 +290,11 @@ print_resolved_env() {
   print_info "------ Blocked IPv6 ranges -----"
   for range in "${GLOBAL_IPV6_BLOCKLIST[@]}"; do
     print_info "Blocked IPv6 Range: $range"
+  done
+  print_info "--------------------------------"
+  print_info "------ Post run commands -------"
+  for cmd in "${GLOBAL_POST_RUN_COMMANDS[@]}"; do
+    print_info "Post run command: $cmd"
   done
   print_info "--------------------------------"
 }
@@ -592,6 +598,16 @@ nft_block_ipv6_cdir() {
   fi
 }
 
+post_setup_apply() {
+  for cmd in "${GLOBAL_POST_SETUP_COMMANDS[@]}"; do
+    print_info "Executing post setup command: $cmd"
+    eval "$cmd" || {
+      print_error "Post setup command failed: $cmd"
+      exit 1
+    }
+  done
+}
+
 print_info "===================================="
 print_info "====== Kira Router project V2 ======"
 print_info "===================================="
@@ -626,7 +642,9 @@ setup() {
   nft_block_ipv4_cdir
   nft_block_ipv6_cdir
   print_info ""
-  print_info "====== NFTables setup complete ======"
+  print_info "====== Running post setup commands ======"
+  post_setup_apply
+  print_info "====== Setup complete ======"
   print_info ""
   print_info "You can view the current nftables rules with: nft list ruleset"
   print_info "You can monitor nftables logs with: nft monitor trace"
