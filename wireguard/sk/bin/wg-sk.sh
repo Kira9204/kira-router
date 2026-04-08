@@ -13,6 +13,8 @@ IVPN_IPV4_SUB=26
 IVPN_IPV4_CDIR="$IVPN_IPV4_ADDR/$IVPN_IPV4_SUB"
 ILAN_IPV4_ADDR=$(get_ipv4_addr lan)
 
+ROUTE_DOS="10.0.1.0/24 via 169.254.0.5 src $ILAN_IPV4_ADDR"
+ROUTE_NEO="10.0.3.0/24 via 169.254.0.1 src $ILAN_IPV4_ADDR"
 ROUTE_TB="10.0.4.0/24 via 169.254.0.3 src $ILAN_IPV4_ADDR"
 
 setup() {
@@ -32,6 +34,8 @@ setup() {
   nft add rule ip filter forward oifname $IVPN_NAME accept
 
   # Add routes to remote networks
+  ip -4 route add $ROUTE_DOS
+  ip -4 route add $ROUTE_NEO
   ip -4 route add $ROUTE_TB
 
   # Failed status codes when pinging is expected
@@ -46,6 +50,8 @@ teardown() {
   print_info "Removing old routes and devices..."
 
   set +e
+  ip -4 route del $ROUTE_DOS
+  ip -4 route del $ROUTE_NEO
   ip -4 route del $ROUTE_TB
 
   # Remove the interface
