@@ -6,8 +6,8 @@ MY_IP_V4="auto"
 MY_IP_V6="auto"
 
 # List of Hetzner DNS zones to update
-# Example: HZ_ZONES=("kira.rip" "example.com")
-HZ_ZONES=("kira.rip")
+# Example: HZ_ZONES=("kira.rip")
+HZ_ZONES=()
 
 # List of record names to update with current IP
 # Example: HZ_IPV4_NAMES=("@" "home")

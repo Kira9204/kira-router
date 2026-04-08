@@ -7,7 +7,7 @@ MY_IP_V6="auto"
 
 # List of DigitalOcean DNS zones to update
 # Example: DO_ZONES=("kira.rip" "example.com")
-DO_ZONES=("kira.rip" "erikwelander.se")
+DO_ZONES=()
 
 # List of record names to update with current IP
 # Example: DO_IPV4_NAMES=("@" "home")
