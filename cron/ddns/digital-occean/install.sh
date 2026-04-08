@@ -9,14 +9,14 @@ fail_if_not_installed systemctl curl
 DIR_BIN="/usr/local/bin"
 DIR_SYSTEMD="/etc/systemd/system"
 
-TOKEN_DIR="/etc/kira-router/ddns/digital-ocean"
-TOKEN_FILE="$TOKEN_DIR/token.sh"
-echo "Adding config directory $TOKEN_DIR..."
-if [ ! -d "$TOKEN_DIR" ]; then
-  mkdir -p "$TOKEN_DIR"
+DIR_CONF="/etc/kira-router/ddns/digital-occean"
+echo "Adding config directory $DIR_CONF..."
+if [ ! -d "$DIR_CONF" ]; then
+  mkdir -p "$DIR_CONF"
 fi
 
-echo "DIGITAL_OCEAN_TOKEN=" > "$TOKEN_FILE"
+echo "Installing default config to $DIR_CONF"
+cp ./conf/conf.sh "$DIR_CONF/conf.sh"
 
 echo "Installing blocklist script to $DIR_BIN/digital-ocean-dns-update.sh..."
 cp ./bin/digital-ocean-dns-update.sh "$DIR_BIN/digital-ocean-dns-update.sh"
