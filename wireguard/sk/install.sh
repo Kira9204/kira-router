@@ -23,10 +23,8 @@ chmod +x "$DIR_BIN/wg-sk.sh"
 
 echo "Installing and enabling systemd service $DIR_SYSTEMD/wg-sk.service..."
 systemctl stop wg-sk.service 2> /dev/null || true
-systemctl disable wg-sk.service 2> /dev/null || true
 cp ./conf/wg-sk.service "$DIR_SYSTEMD"
 systemctl daemon-reload
-systemctl enable wg-sk.service
 echo "To start the service now, run: systemctl start wg-sk.service"
 
 echo "Installation complete!"

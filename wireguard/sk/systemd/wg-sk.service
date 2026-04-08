@@ -1,6 +1,7 @@
 [Unit]
 Description=Snekabel Wireguard VPN Networks Setup
-# Kira-router will clear and configure all nftables rules
+# Note: The kira-router service will start this service.
+# Do not run systemctl enable wg-sk.service!
 Requires=kira-router.service
 After=kira-router.service
 
