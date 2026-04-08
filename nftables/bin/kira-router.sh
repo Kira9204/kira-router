@@ -292,9 +292,9 @@ print_resolved_env() {
     print_info "Blocked IPv6 Range: $range"
   done
   print_info "--------------------------------"
-  print_info "------ Post run commands -------"
-  for cmd in "${GLOBAL_POST_RUN_COMMANDS[@]}"; do
-    print_info "Post run command: $cmd"
+  print_info "------ Post setup commands -------"
+  for cmd in "${GLOBAL_POST_SETUP_COMMANDS[@]}"; do
+    print_info "Post setup command: $cmd"
   done
   print_info "--------------------------------"
 }
