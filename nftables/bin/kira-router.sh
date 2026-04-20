@@ -39,6 +39,7 @@ verify_required_vars() {
     "GLOBAL_IWAN_IPV6_CDIR"
     "GLOBAL_INTERNET_GATEWAY_MODE_IPV4"
     "GLOBAL_INTERNET_GATEWAY_MODE_IPV6"
+    "GLOBAL_IPV6_PORT_FORWARDING_MODE"
   )
 
   for var in "${required_vars[@]}"; do
@@ -274,6 +275,16 @@ print_resolved_env() {
   done
   print_info "-----------------------"
   print_info "------ Forwarded Ports -----"
+  print_info "FORWADING MODE: $GLOBAL_IPV6_PORT_FORWARDING_MODE"
+  if [ "$GLOBAL_IPV6_PORT_FORWARDING_MODE" == "FORWARD_NAT" ]; then
+    print_info "IPv6 port forwards will be set up with both FORWARD and NAT rules, allowing access to the target host both via its global IPv6 address and via the WAN interface's IPv6 address and the forwarded port."
+  elif [ "$GLOBAL_IPV6_PORT_FORWARDING_MODE" == "FORWARD" ]; then
+    print_info "IPv6 port forwards will be set up with FORWARD rules only, allowing access to the target host directly via its global IPv6 address."
+  elif [ "$GLOBAL_IPV6_PORT_FORWARDING_MODE" == "NAT" ]; then
+    print_info "IPv6 port forwards will be set up with NAT rules, allowing access to the target host via the WAN interface's IPv6 address and the forwarded port."
+  else
+    print_warn "Invalid IPv6 port forwarding mode: $GLOBAL_IPV6_PORT_FORWARDING_MODE. No IPv6 port forwards will be set up."
+  fi
   for name in "${GLOBAL_PORT_FORWARDS[@]}"; do
     local protocol=$(eval "echo \${${name}[protocol]}")
     local src_port=$(eval "echo \${${name}[src_port]}")
@@ -541,18 +552,38 @@ nft_forward_ports() {
     fi
 
     if [ "$GLOBAL_IWAN_IPV6_ENABLED" == "true" ]; then
-      if [ "$GLOBAL_INTERNET_GATEWAY_MODE_IPV6" == "FORWARD" ]; then
-        # Accept any DNATed forward
+
+      # For IPv6 we have 3 different forwarding modes that can be set via the GLOBAL_IPV6_PORT_FORWARDING_MODE variable:
+      # 1. FORWARD: This mode sets up simple forwarding rules that allow direct access to the destination host's global IPv6 address.
+      #    This is the most straightforward and "IPv6 native" way to do port forwarding, since all hosts have public IPv6 addresses
+      #    and there is typically no need for address translation.
+      # 2. FORWARD_NAT: This mode sets up both forwarding and NAT rules, allowing access to the destination host both via its
+      #    own IPv6 address, and via the WAN interface's IPv6 address and the forwarded port.
+      # 3. NAT: This mode sets up only NAT rules, allowing access to the destination host via the WAN interface's IPv6 address and the forwarded port.
+      #    Only use this mode if you are also doing NAT66, where all of your clients use local IPv6 addresses and the router performs NAT via its WAN IPv6 address.
+      if [ "$GLOBAL_IPV6_PORT_FORWARDING_MODE" == "FORWARD" ]; then
+        # Allow direct access to the host's public IPv6 address (bypasses DNAT)
+        nft add rule ip6 filter forward iifname $GLOBAL_IWAN_NAME ip6 daddr $dest_host_ipv6 $protocol dport $dest_port accept
+      elif [ "$GLOBAL_IPV6_PORT_FORWARDING_MODE" == "FORWARD_NAT" ]; then
+        # Accept any DNATed forward (via router WAN IPv6)
         nft add rule ip6 filter forward ct status dnat accept
         nft add rule ip6 nat prerouting ip6 daddr $GLOBAL_IWAN_IPV6_ADDR $protocol dport $src_port dnat to "[$dest_host_ipv6]:$dest_port"
-      elif [ "$GLOBAL_INTERNET_GATEWAY_MODE_IPV6" == "NAT" ]; then
-        # Set up DNAT
+
+        # Allow direct access to the host's public IPv6 address (bypasses DNAT)
+        nft add rule ip6 filter forward iifname $GLOBAL_IWAN_NAME ip6 daddr $dest_host_ipv6 $protocol dport $dest_port accept
+
+        # Hairpin SNAT only when DNATed
+        #nft add rule ip6 nat postrouting ip6 saddr $GLOBAL_ILAN_IPV6_CDIR ct status dnat masquerade
+        nft add rule ip6 nat postrouting ip6 saddr $GLOBAL_ILAN_IPV6_CDIR oifname $GLOBAL_ILAN_NAME ct status dnat masquerade
+      elif [ "$GLOBAL_IPV6_PORT_FORWARDING_MODE" == "NAT" ]; then
+        # Set up DNAT (via router WAN IPv6)
         nft add rule ip6 nat prerouting ip6 daddr $GLOBAL_IWAN_IPV6_ADDR $protocol dport $src_port dnat to "[$dest_host_ipv6]:$dest_port"
 
         # Accept any DNATed forward
         nft add rule ip6 filter forward ct status dnat accept
-        # (or, if you prefer, match the post-DNAT dest specifically)
-        # nft add rule ip6 filter forward ip6 daddr $dst_host_v6 $dst_protocol dport $dst_lan_port accept
+
+        # Allow direct access to the host's public IPv6 address (bypasses DNAT)
+        nft add rule ip6 filter forward iifname $GLOBAL_IWAN_NAME ip6 daddr $dest_host_ipv6 $protocol dport $dest_port accept
 
         # Hairpin SNAT only when DNATed
         #nft add rule ip6 nat postrouting ip6 saddr $GLOBAL_ILAN_IPV6_CDIR ct status dnat masquerade

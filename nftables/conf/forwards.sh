@@ -32,9 +32,15 @@ GLOBAL_OPEN_PORTS=(ssh wireguard)
 #
 declare -A router=([ipv4]="10.0.6.1" [ipv6]="2001:db8::1")
 declare -A server=([ipv4]="10.0.6.2" [ipv6]="2001:db8::2")
-GLOBAL_HOSTS=(router server desktop)
+GLOBAL_HOSTS=(router server)
 
 ###### Port Forwards ######
+# Declares IPv4 and IPv6 port forwards from the WAN interface to hosts on the LAN.
+# If you are using IPv6, both NAT and non-NAT port forwards will be set up.
+# This means that you can access the target host directly via its global IPv6 address,
+# or via the WAN interface's IPv6 address and the forwarded port.
+#
+
 # Declare the port forwards you want to set up.
 # Each port forward is an associative array with the following keys:
 #   protocol: "tcp" or "udp"

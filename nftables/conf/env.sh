@@ -52,13 +52,23 @@ GLOBAL_IWAN_IPV6_SUB="64"
 GLOBAL_IWAN_IPV6_CDIR="$GLOBAL_IWAN_IPV6_ADDR/$GLOBAL_IWAN_IPV6_SUB"
 
 ###### Internet Gateway Settings ######
-# Set to "NAT" to enable firewalled IPv4 gateway mode (NAT)
-# Set to "NONE" to disable IPv4 gateway mode.
+# 1. "NAT" to enable firewalled IPv4 gateway mode (NAT)
+# 2. "NONE" to disable IPv4 gateway mode.
 GLOBAL_INTERNET_GATEWAY_MODE_IPV4="NAT"
 
-# Set to "FORWARD" to enable firewalled IPv6 forwarding mode (no NAT) (recommended)"
-# Set to "NAT" to enable IPv6 gateway mode with NAT66. (Not recommended)"
-# Set to "NONE" to do nothing.
+# 1. "FORWARD" to enable firewalled IPv6 forwarding mode (no NAT) (recommended)"
+# 2. "NAT" to enable IPv6 gateway mode with NAT66. (Not recommended)"
+# 3. "NONE" to do nothing.
 # It is recommended to use FORWARD mode if your ISP provides native IPv6 connectivity via DHCPv6-PD.
 # For local addressing, use ULA addresses (fde5:7dda:9d44::/48)
 GLOBAL_INTERNET_GATEWAY_MODE_IPV6="FORWARD"
+
+# IPv6 Port Forwarding Mode
+# 1. FORWARD: This mode sets up simple forwarding rules that allow direct access to the destination host's global IPv6 address.
+#    This is the most straightforward and "IPv6 native" way to do port forwarding, since all hosts have public IPv6 addresses
+#    and there is typically no need for address translation.
+# 2. FORWARD_NAT: This mode sets up both forwarding and NAT rules, allowing access to the destination host both via its
+#    own IPv6 address, and via the WAN interface's IPv6 address and the forwarded port.
+# 3. NAT: This mode sets up only NAT rules, allowing access to the destination host via the WAN interface's IPv6 address and the forwarded port.
+#    Only use this mode if you are also doing NAT66, where all of your clients use local IPv6 addresses and the router performs NAT via its WAN IPv6 address.
+GLOBAL_IPV6_PORT_FORWARDING_MODE="FORWARD"
