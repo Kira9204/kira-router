@@ -2,5 +2,5 @@
 MACAddress=aa:aa:aa:aa:aa:aa
 
 [Link]
-Name=wan
+Name=lan
 
