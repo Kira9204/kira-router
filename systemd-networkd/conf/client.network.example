@@ -6,13 +6,21 @@ RequiredForOnline=routable
 RequiredFamilyForOnline=both
 
 [Network]
-Description=LAN for clients
+Description=LAN network
+# IPv4 NAT
 Address=10.0.6.30/24
 Gateway=10.0.6.1
 DNS=10.0.6.1
-Address=fde5:7dda:9d44::3/64
+
+# IPv6 ULA
+Address=fde5:7dda:9d44::1e/64
 DNS=fde5:7dda:9d44::1
+# IPv6 public addressing
 IPv6AcceptRA=yes
 IPv6PrivacyExtensions=yes
 IPv6DuplicateAddressDetection=0
+
+# IPv6 static public address
+[IPv6AcceptRA]
+Token=static:::1e
 
